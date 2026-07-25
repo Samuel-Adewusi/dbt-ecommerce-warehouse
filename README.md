@@ -58,11 +58,11 @@ self-contained and runnable without needing an upstream pipeline first.
 
 **dbt lineage graph** — shows the full dependency chain from raw seeds through staging, intermediate, and marts:
 
-![dbt lineage graph](docs/images/lineage-graph.png)
+ ![dbt lineage graph](docsimages/dbt-lineage-graph.png)
 
 **Generated documentation** for `fct_orders`, showing column descriptions and tests:
 
-![fct_orders documentation](docs/images/fct-orders-docs.png)
+ ![fct_orders documentation](docsimages/fct_orders-docs.png)
 
 ## Tech stack
 
