@@ -4,4 +4,4 @@ logs/
 *.duckdb
 .env
 __pycache__/
-ci/.user.yml
+
