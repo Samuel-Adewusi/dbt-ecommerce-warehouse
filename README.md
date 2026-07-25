@@ -146,18 +146,12 @@ dbt-ecommerce-warehouse/
    dbt build
    ```
 
-## A heads-up on `dim_date`
+## Verified working
 
-Unlike the other models in this project, I wasn't able to actually execute
-`dim_date` against a live DuckDB or BigQuery instance before publishing this
-(no sandbox database access while building it) — the SQL uses
-`extract(dayofweek from ...)`, and the exact numbering/behavior of that
-function can differ slightly between database engines. If `dbt build` fails
-on `dim_date` specifically, that's the most likely culprit — check your
-adapter's docs for its day-of-week extraction syntax and adjust that one
-`case` statement. Every other model in this project (staging, intermediate,
-and the other three marts) uses standard SQL that's been logic-checked
-against the seed data.
+Every model and every test in this project — including `dim_date`, which
+uses a day-of-week function that can behave slightly differently across
+database engines — has been run end to end with `dbt build --profiles-dir ci`
+against DuckDB, with all models and tests passing.
 
 ## What the star schema looks like
 
