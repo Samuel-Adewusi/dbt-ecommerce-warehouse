@@ -54,6 +54,16 @@ the [Airflow orchestration project](https://github.com/Samuel-Adewusi/airflow-we
 writing into a `raw` schema. Seeds are used here so this project is fully
 self-contained and runnable without needing an upstream pipeline first.
 
+## Screenshots
+
+**dbt lineage graph** — shows the full dependency chain from raw seeds through staging, intermediate, and marts:
+
+![dbt lineage graph](docs/images/lineage-graph.png)
+
+**Generated documentation** for `fct_orders`, showing column descriptions and tests:
+
+![fct_orders documentation](docs/images/fct-orders-docs.png)
+
 ## Tech stack
 
 - **dbt Core** — SQL transformations as version-controlled, tested code
@@ -163,9 +173,31 @@ against DuckDB, with all models and tests passing.
 - **`dim_date`** — one row per calendar day for the year covered by the
   data, with day-of-week, month, and year broken out for easy filtering
 
-A sample question this model answers with one simple query against
-`fct_orders` joined to `dim_customers`: *"total revenue by customer region,
-this quarter"* — no re-deriving joins across raw tables required.
+Staging and intermediate models are materialized as views, while marts
+are materialized as tables for BI consumption — views stay cheap and
+always fresh for the light cleaning/joining layers, while the
+BI-facing marts are built as physical tables so dashboards querying
+them don't re-run the full transformation chain on every load.
+
+Every model and column in `models/marts/schema.yml` is documented with a
+description, which is what powers the generated docs site
+(`dbt docs generate` / `dbt docs serve`) shown in the screenshots above.
+
+### Sample analytics query
+
+One example of the value of modeling this up front — total revenue by
+customer region, straight off the mart, no raw-table joins required:
+
+```sql
+SELECT
+    c.region,
+    SUM(f.total_amount) AS revenue
+FROM fct_orders f
+JOIN dim_customers c
+    ON f.customer_id = c.customer_id
+GROUP BY c.region
+ORDER BY revenue DESC;
+```
 
 ## What the tests catch
 
@@ -181,7 +213,7 @@ this quarter"* — no re-deriving joins across raw tables required.
   and add `dbt source freshness` checks so stale raw data fails loudly.
 - Add incremental materialization on `fct_orders` once order volume is too
   large to rebuild the full table on every run.
-- Add a `elementary` or dbt Cloud-style test-failure alerting integration
-  instead of relying on someone watching CI manually.
+- Add Elementary or dbt Cloud–style test-failure alerting instead of
+  relying on someone watching CI manually.
 - Partition `fct_orders` by `order_date` in BigQuery for query performance
   and cost control at scale.
