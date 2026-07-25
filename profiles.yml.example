@@ -1,0 +1,28 @@
+# Copy this file to ~/.dbt/profiles.yml (dbt's real config location — do
+# NOT commit your actual filled-in version to git, since it will contain
+# paths to credentials).
+#
+# You can keep both targets here: `duckdb` for fast local iteration, and
+# `bigquery` for running against your real warehouse. Switch between them
+# with `dbt build --target bigquery` (defaults to whatever `target:` says
+# below if you omit --target).
+
+ecommerce_warehouse:
+  target: duckdb
+  outputs:
+
+    duckdb:
+      type: duckdb
+      path: 'ecommerce_warehouse.duckdb'
+      threads: 4
+
+    bigquery:
+      type: bigquery
+      method: service-account
+      project: your-gcp-project-id
+      dataset: ecommerce_warehouse
+      keyfile: /path/to/your/service-account-key.json
+      threads: 4
+      location: US
+      # Optional: cap query cost during development
+      maximum_bytes_billed: 1000000000

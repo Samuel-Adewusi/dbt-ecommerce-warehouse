@@ -1,0 +1,63 @@
+models:
+  - name: dim_customers
+    description: One row per customer. The customer dimension for BI joins.
+    columns:
+      - name: customer_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: email
+        description: Lowercased, trimmed email address. May be null if missing at source.
+
+  - name: dim_products
+    description: One row per product. The product dimension for BI joins.
+    columns:
+      - name: product_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_date
+    description: One row per calendar day, spanning the year of order data.
+    columns:
+      - name: date_day
+        description: Primary key. One row per calendar date.
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_orders
+    description: >
+      One row per order. The central fact table: order-level totals
+      aggregated from priced line items.
+    columns:
+      - name: order_id
+        description: Primary key. One row per order.
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to dim_customers.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: order_date
+        description: Foreign key to dim_date.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_day
+      - name: total_amount
+        description: Sum of (quantity * unit_price) across every line item on the order.
+        tests:
+          - not_null
+      - name: status
+        description: Order status, standardized to lowercase in staging.
+        tests:
+          - accepted_values:
+              values: ["completed", "pending", "cancelled"]

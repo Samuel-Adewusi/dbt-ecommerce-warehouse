@@ -1,0 +1,48 @@
+seeds:
+  - name: raw_customers
+    description: Raw customer records, as landed from the source system (unclean).
+    columns:
+      - name: customer_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: raw_products
+    description: Raw product catalog.
+    columns:
+      - name: product_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: raw_orders
+    description: Raw order headers.
+    columns:
+      - name: order_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to raw_customers.
+        tests:
+          - not_null
+
+  - name: raw_order_items
+    description: Raw order line items.
+    columns:
+      - name: order_item_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Foreign key to raw_orders.
+        tests:
+          - not_null
+      - name: product_id
+        description: Foreign key to raw_products.
+        tests:
+          - not_null

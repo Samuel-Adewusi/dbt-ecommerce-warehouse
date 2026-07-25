@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dbt and the DuckDB adapter
+        run: pip install dbt-core dbt-duckdb
+
+      - name: Install dbt packages
+        run: dbt deps --profiles-dir ci
+
+      - name: Seed raw data
+        run: dbt seed --profiles-dir ci
+
+      - name: Build and test all models
+        run: dbt build --profiles-dir ci

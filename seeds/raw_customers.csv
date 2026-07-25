@@ -1,0 +1,11 @@
+customer_id,first_name,last_name,email,signup_date,region
+1,Maria,Gonzalez,Maria.Gonzalez@email.com,2025-01-15,South
+2,James,Wu,james.wu@email.com,2025-02-03,West
+3,Aisha,Bello, aisha.bello@email.com ,2025-02-20,South
+4,Liam,O'Connor,liam.oconnor@email.com,2025-03-01,Northeast
+5,Sophia,Kim,SOPHIA.KIM@email.com,2025-03-14,West
+6,Noah,Smith,noah.smith@email.com,2025-04-02,Midwest
+7,Fatima,Ahmed,,2025-04-19,South
+8,Ethan,Brown,ethan.brown@email.com,2025-05-05,Northeast
+9,Olivia,Martin,olivia.martin@email.com,2025-05-22,Midwest
+10,Lucas,Silva,lucas.silva@email.com,2025-06-10,West
