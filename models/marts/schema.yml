@@ -61,3 +61,50 @@ models:
         tests:
           - accepted_values:
               values: ["completed", "pending", "cancelled"]
+
+  - name: fct_order_items
+    description: >
+      One row per order line item. This is the grain product- and
+      category-level analysis needs — fct_orders can't answer "revenue by
+      product" or "units sold by category" since a single order can
+      contain multiple products across multiple categories. Use this
+      table for anything product-related; use fct_orders for order-level
+      totals and counts.
+    columns:
+      - name: order_item_id
+        description: Primary key. One row per order line item.
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Foreign key to fct_orders.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_orders')
+              field: order_id
+      - name: customer_id
+        description: Foreign key to dim_customers (denormalized here to avoid an extra join for customer-level product analysis).
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: product_id
+        description: Foreign key to dim_products.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: order_date
+        description: Foreign key to dim_date.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_day
+      - name: line_amount
+        description: quantity * unit_price for this line item.
+        tests:
+          - not_null
